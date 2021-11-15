@@ -40,7 +40,7 @@ init(_Args) ->
 %
 
 handle_call(_, _From, State) ->
-	{reply, State}.
+	{reply, ok, State}.
 
 handle_cast({recieve_packages, Packages}, State) ->
     io:format("Recieved ~p packages~n", [length(Packages)]),

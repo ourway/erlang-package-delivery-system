@@ -49,4 +49,4 @@ handle_cast({deliver_packages, Packages}, State) ->
     {noreply, State}.
 
 handle_call(_, _From, State) ->
-	{reply, State}.
+	{reply, ok, State}.
