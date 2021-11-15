@@ -1,8 +1,8 @@
-{application, mydns,
+{application, delivery_system,
  [{description, "An OTP application"},
   {vsn, "0.1.0"},
   {registered, []},
-  {mod, {mydns_app, []}},
+  {mod, {delivery_system_app, []}},
   {applications,
    [kernel,
     stdlib

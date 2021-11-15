@@ -1,9 +1,9 @@
 %%%-------------------------------------------------------------------
-%% @doc mydns top level supervisor.
+%% @doc delivery_system top level supervisor.
 %% @end
 %%%-------------------------------------------------------------------
 
--module(mydns_sup).
+-module(delivery_system_sup).
 
 -behaviour(supervisor).
 

@@ -2,10 +2,9 @@
 -export([batch/1]).
 
 
--record(package, {id, name}).
 -define(OPTIONS, ["notebook", "mouse", "desk",
 				"monitor", "pencil", "bottle", "vape",
-				 "fork", "spoon", "camera", "light"]).
+				 "fork", "spoon", "camera", "light", "iPad"]).
 
 
 sanitize(S) ->
@@ -26,7 +25,7 @@ rand_id() ->
 			{0, 10})).
 
 new() ->
-	#package{id=sanitize(rand_id()), name=select(?OPTIONS)}.
+	#{"id"=>sanitize(rand_id()), "name"=>select(?OPTIONS)}.
 
 batch(N) ->
 	[new() || _ <- lists:seq(1,N)].

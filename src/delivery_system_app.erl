@@ -1,16 +1,16 @@
 %%%-------------------------------------------------------------------
-%% @doc mydns public API
+%% @doc delivery_system public API
 %% @end
 %%%-------------------------------------------------------------------
 
--module(mydns_app).
+-module(delivery_system_app).
 
 -behaviour(application).
 
 -export([start/2, stop/1]).
 
 start(_StartType, _StartArgs) ->
-    mydns_sup:start_link().
+    delivery_system_sup:start_link().
 
 stop(_State) ->
     ok.
