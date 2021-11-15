@@ -26,16 +26,22 @@ start_link() ->
 %%                  modules => modules()}   % optional
 init([]) ->
     SupFlags =
-        #{strategy => one_for_one,
-          intensity => 10,
-          period => 2},
+        #{
+            strategy => one_for_one,
+            intensity => 10,
+            period => 2
+        },
     ChildSpecs =
-        [#{id => reciever1,
-           start => {reciever, start_link, []},
-           restart => permanent,
-           shutdown => infinity,
-           type => worker,
-           modules => [reciever]}],
+        [
+            #{
+                id => reciever1,
+                start => {reciever, start_link, []},
+                restart => permanent,
+                shutdown => infinity,
+                type => worker,
+                modules => [reciever]
+            }
+        ],
     {ok, {SupFlags, ChildSpecs}}.
 
 %% internal functions

@@ -1,11 +1,11 @@
-{application,
- delivery_system,
- [{description, "An OTP application"},
-  {vsn, "0.1.0"},
-  {registered, []},
-  {mod, {delivery_system_app, []}},
-  {applications, [kernel, stdlib]},
-  {env, []},
-  {modules, []},
-  {licenses, ["Apache 2.0"]},
-  {links, []}]}.
+{application, delivery_system, [
+    {description, "An OTP application"},
+    {vsn, "0.1.0"},
+    {registered, []},
+    {mod, {delivery_system_app, []}},
+    {applications, [kernel, stdlib]},
+    {env, []},
+    {modules, []},
+    {licenses, ["Apache 2.0"]},
+    {links, []}
+]}.

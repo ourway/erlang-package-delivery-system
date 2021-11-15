@@ -2,19 +2,20 @@
 
 -export([batch/1]).
 
--define(OPTIONS,
-        ["notebook",
-         "mouse",
-         "desk",
-         "monitor",
-         "pencil",
-         "bottle",
-         "vape",
-         "fork",
-         "spoon",
-         "camera",
-         "light",
-         "iPad"]).
+-define(OPTIONS, [
+    "notebook",
+    "mouse",
+    "desk",
+    "monitor",
+    "pencil",
+    "bottle",
+    "vape",
+    "fork",
+    "spoon",
+    "camera",
+    "light",
+    "iPad"
+]).
 
 sanitize(S) ->
     {ok, MP} = re:compile("[/=_+]"),
@@ -23,13 +24,18 @@ sanitize(S) ->
 select(L) ->
     _ = rand:seed_s(exsss),
     lists:nth(
-        rand:uniform(length(L)), L).
+        rand:uniform(length(L)), L
+    ).
 
 rand_id() ->
-    binary_to_list(binary:part(
-                       base64:encode(
-                           crypto:strong_rand_bytes(32)),
-                       {0, 10})).
+    binary_to_list(
+        binary:part(
+            base64:encode(
+                crypto:strong_rand_bytes(32)
+            ),
+            {0, 10}
+        )
+    ).
 
 new() ->
     #{"id" => sanitize(rand_id()), "name" => select(?OPTIONS)}.
