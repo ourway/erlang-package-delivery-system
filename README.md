@@ -1,9 +1,18 @@
-delivery_system
-=====
+Delivery System
+===============
 
-An OTP application
+A package delivery platform
 
 Build
 -----
+```console
+	$ make build
+	$ make
+```
 
-    $ rebar3 compile
+Usage
+-----
+```erl
+Packages = packages:batch(100).
+reciever:recieve_packages(Packages).
+```

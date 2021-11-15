@@ -2,7 +2,7 @@
 
 -behaviour(gen_server).
 
--export([start/0, init/1, handle_cast/2]).
+-export([start/0, init/1, handle_cast/2, handle_call/3]).
 -export([deliver_packages/2]).
 
 % helpers
@@ -47,3 +47,6 @@ init(_Args) ->
 handle_cast({deliver_packages, Packages}, State) ->
     deliver(Packages),
     {noreply, State}.
+
+handle_call(_, _From, State) ->
+	{reply, State}.

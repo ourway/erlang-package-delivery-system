@@ -5,7 +5,7 @@
 -behaviour(gen_server).
 
 -export([start_link/0]).
--export([init/1, handle_cast/2, handle_info/2]).
+-export([init/1, handle_cast/2, handle_info/2, handle_call/3]).
 -export([recieve_packages/1, map/2, chunk/2]).
 
 -define(MAXC, 128).
@@ -37,6 +37,10 @@ init(_Args) ->
 %handle_info({'EXIT', _From, Reason}, State) ->
 %	io:format("Reciever is going down: ~p~n", [Reason]),
 %	{noreply, ok, State}.
+%
+
+handle_call(_, _From, State) ->
+	{reply, State}.
 
 handle_cast({recieve_packages, Packages}, State) ->
     io:format("Recieved ~p packages~n", [length(Packages)]),
