@@ -6,30 +6,9 @@
 
 -export([start_link/0]).
 -export([init/1, handle_cast/2, handle_info/2, handle_call/3]).
--export([recieve_packages/1, map/2, chunk/2]).
+-export([recieve_packages/1]).
 
 -define(MAXC, 128).
-
-chunk(List, N) ->
-    RevList = split_list(List, N),
-    lists:foldl(fun(E, Acc) -> [lists:reverse(E) | Acc] end, [], RevList).
-
-split_list(List, Max) ->
-    element(
-        1,
-        lists:foldl(
-            fun
-                (E, {[Buff | Acc], C}) when C < Max ->
-                    {[[E | Buff] | Acc], C + 1};
-                (E, {[Buff | Acc], _}) ->
-                    {[[E], Buff | Acc], 1};
-                (E, {[], _}) ->
-                    {[[E]], 1}
-            end,
-            {[], 0},
-            List
-        )
-    ).
 
 start_link() ->
     gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
@@ -57,7 +36,7 @@ handle_cast({recieve_packages, Packages}, State) ->
 
 handle_info({package_delivered, Package}, State) ->
     DeliveredPackages =
-        filter(
+        helpers:filter(
             fun(P) -> maps:get("id", P) =:= maps:get("id", Package) end,
             maps:get("assignments", State)
         ),
@@ -71,11 +50,11 @@ handle_info({'DOWN', _Ref, process, Deliverator, normal}, State) ->
 handle_info({'DOWN', _Ref, process, Deliverator, Reason}, State) ->
     io:format("Deliverator ~p crashed because ~p.~n", [Deliverator, Reason]),
     FailedAssignments =
-        filter(
+        helpers:filter(
             fun(P) -> maps:get("deliverator", P) =:= Deliverator end,
             maps:get("assignments", State)
         ),
-    FailedPackages = map(fun(A) -> maps:remove("deliverator", A) end, FailedAssignments),
+    FailedPackages = helpers:map(fun(A) -> maps:remove("deliverator", A) end, FailedAssignments),
     Assignments = maps:get("assignments", State) -- FailedAssignments,
     NewState = maps:update("assignments", Assignments, State),
     recieve_packages(FailedPackages),
@@ -85,29 +64,13 @@ handle_info({'DOWN', _Ref, process, Deliverator, Reason}, State) ->
 %	logger:error("Something strange happened!"),
 %    ok.
 
-%% helpers
-filter(F, [H | T]) ->
-    case F(H) of
-        true ->
-            [H | filter(F, T)];
-        false ->
-            filter(F, T)
-    end;
-filter(_F, []) ->
-    [].
-
-map(F, [H | T]) ->
-    [F(H) | map(F, T)];
-map(_F, []) ->
-    [].
-
 recieve_packages(Packages) ->
     lists:foreach(
         fun(C) -> gen_server:cast(?MODULE, {recieve_packages, C}) end,
-        chunk(Packages, trunc(min(?MAXC, length(Packages) / ?MAXC)))
+        helpers:chunk(Packages, trunc(min(?MAXC, length(Packages) / ?MAXC)))
     ).
 
 assign_packages(State, Packages, Deliverator) ->
-    NewAssignments = map(fun(P) -> maps:put("deliverator", Deliverator, P) end, Packages),
+    NewAssignments = helpers:map(fun(P) -> maps:put("deliverator", Deliverator, P) end, Packages),
     Assignments = NewAssignments ++ maps:get("assignments", State),
     maps:update("assignments", Assignments, State).

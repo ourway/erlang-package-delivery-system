@@ -34,12 +34,20 @@ init([]) ->
     ChildSpecs =
         [
             #{
-                id => reciever1,
+                id => reciever_1,
                 start => {reciever, start_link, []},
                 restart => permanent,
                 shutdown => infinity,
                 type => worker,
                 modules => [reciever]
+            },
+            #{
+                id => deliverator_pool_1,
+                start => {deliverator_pool, start_link, []},
+                restart => permanent,
+                shutdown => infinity,
+                type => worker,
+                modules => [deliverator_pool2]
             }
         ],
     {ok, {SupFlags, ChildSpecs}}.
