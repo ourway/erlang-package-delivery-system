@@ -1,4 +1,5 @@
 -module(helpers).
+
 -export([chunk/2, filter/2, map/2]).
 
 chunk(List, N) ->

@@ -1,3 +1,11 @@
+%%%-------------------------------------------------------------------
+%%% @author farshid.ashouri
+%%% @copyright (C) 2021, farshid.ashouri
+%%% @doc
+%%%
+%%% @end
+%%% Created : 2021-11-19 01:37:01.567395
+%%%-------------------------------------------------------------------
 -module(deliverator).
 
 -behaviour(gen_server).
@@ -36,7 +44,7 @@ deliver([Package | RemainigPackages]) ->
     whereis(reciever) ! {package_delivered, Package},
     deliver(RemainigPackages);
 deliver([]) ->
-    exit(self(), normal).
+    whereis(reciever) ! {deliverator_idle, self()}.
 
 start() ->
     gen_server:start(?MODULE, [], []).

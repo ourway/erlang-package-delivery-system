@@ -7,7 +7,9 @@
 %%% Created : 2021-11-19 01:37:01.567395
 %%%-------------------------------------------------------------------
 -module(deliverator_pool).
+
 -behaviour(gen_server).
+
 %% API
 -export([
     available_deliverator/0,
@@ -15,15 +17,8 @@
     flag_deliverator_idle/1,
     remove_deliverator/1
 ]).
-
 %% gen_server callbacks
--export([
-    start_link/0,
-    handle_call/3,
-    handle_cast/2,
-    init/1
-]).
-
+-export([start_link/0, handle_call/3, handle_cast/2, init/1]).
 % experimental exports - remvove later
 -export([findFirstIdle/1]).
 
@@ -32,9 +27,11 @@
 findFirstIdle([]) ->
     nil;
 findFirstIdle([Item | ListTail]) ->
-    case (maps:get("flag", Item) =:= idle) of
-        true -> Item;
-        false -> findFirstIdle(ListTail)
+    case maps:get("flag", Item) =:= idle of
+        true ->
+            Item;
+        false ->
+            findFirstIdle(ListTail)
     end.
 
 start_link() ->
@@ -50,29 +47,51 @@ handle_cast(_, State) ->
 
 handle_call({fetch_available_deliverator}, _From, State) ->
     Deliverators = maps:get("deliverators", State),
-    case (findFirstIdle(Deliverators)) of
+    case findFirstIdle(Deliverators) of
         nil ->
             % either maxed out or every pool is busy
-            case (length(Deliverators) > ?MAX) of
+            case length(Deliverators) > maps:get("max", State) of
                 true ->
-                    {error, "deliverator pool maxed out!", State};
+                    {reply, {error, "deliverator pool maxed out!"}, State};
                 false ->
                     % we can start a new deliverator
                     {ok, Deliverator} = deliverator:start(),
-                    NewDeliverators = [
-                        #{"pid" => Deliverator, "flag" => idle} | Deliverators
-                    ],
+                    NewDeliverators = [#{"pid" => Deliverator, "flag" => idle} | Deliverators],
                     NewState = State#{"deliverators" => NewDeliverators},
-                    {reply, Deliverator, NewState}
+                    {reply, {ok, Deliverator}, NewState}
             end;
         #{"pid" := Deliverator} ->
             io:format("found idle deliverator with pid: ~p~n.", [Deliverator]),
-            {reply, Deliverator, State}
+            {reply, {ok, Deliverator}, State}
     end;
-handle_call({flag_deliverator, Flag, Deliverator}, _From, State) ->
-    {reply, ok, State};
-handle_call({remove_deliverator, Deliverator}, _From, State) ->
-    {reply, ok, State}.
+handle_call({flag_deliverator, Flag, DeliveratorProcess}, _From, State) ->
+    Deliverators = maps:get("deliverators", State),
+    case
+        helpers:filter(
+            fun(#{"pid" := D, "flag" := _}) -> D =:= DeliveratorProcess end, Deliverators
+        )
+    of
+        [Deliverator] ->
+            NewDeliverators = [
+                #{"pid" => DeliveratorProcess, "flag" => Flag}
+                | (Deliverators -- [Deliverator])
+            ],
+            {reply, updated, State#{"deliverators" => NewDeliverators}};
+        [] ->
+            {reply, not_found, State}
+    end;
+handle_call({remove_deliverator, DeliveratorProcess}, _From, State) ->
+    Deliverators = maps:get("deliverators", State),
+    case
+        helpers:filter(
+            fun(#{"pid" := D, "flag" := _}) -> D =:= DeliveratorProcess end, Deliverators
+        )
+    of
+        [Deliverator] ->
+            {reply, deleted, State#{"deliverators" => lists:delete(Deliverator, Deliverators)}};
+        [] ->
+            {reply, not_found, State}
+    end.
 
 available_deliverator() ->
     gen_server:call(?MODULE, {fetch_available_deliverator}).
