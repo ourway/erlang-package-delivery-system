@@ -22,7 +22,7 @@
 % experimental exports - remvove later
 -export([findFirstIdle/1]).
 
--define(MAX, 20).
+-define(MAX, 64).
 
 findFirstIdle([]) ->
     nil;

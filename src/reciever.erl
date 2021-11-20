@@ -14,7 +14,7 @@
 -export([init/1, handle_cast/2, handle_info/2, handle_call/3]).
 -export([recieve_packages/1]).
 
--define(BATCH_SIZE, 128).
+-define(BATCH_SIZE, 32).
 
 %%
 %% Public API
@@ -54,9 +54,10 @@ handle_cast({recieve_packages, Packages}, State) ->
             NewState = assign_packages(State, PackageBatch, Deliverator),
             deliverator_pool:flag_deliverator_busy(Deliverator),
             deliverator:deliver_packages(Deliverator, PackageBatch),
-            case (length(RemainingPackages) > 0) of
+            RestOfPackages = lists:flatten(RemainingPackages),
+            case (length(RestOfPackages) > 0) of
                 true ->
-                    recieve_packages(RemainingPackages);
+                    recieve_packages(RestOfPackages);
                 false ->
                     ok
             end,
@@ -84,6 +85,7 @@ handle_info({deliverator_idle, Deliverator}, State) ->
     {noreply, State};
 handle_info({'DOWN', _Ref, process, Deliverator, Reason}, State) ->
     io:format("Deliverator ~p crashed because ~p.~n", [Deliverator, Reason]),
+    deliverator_pool:remove_deliverator(Deliverator),
     FailedAssignments =
         helpers:filter(
             fun(P) -> maps:get("deliverator", P) =:= Deliverator end,
@@ -92,9 +94,13 @@ handle_info({'DOWN', _Ref, process, Deliverator, Reason}, State) ->
     FailedPackages =
         helpers:map(fun(A) -> maps:remove("deliverator", A) end, FailedAssignments),
     Assignments = maps:get("assignments", State) -- FailedAssignments,
-    deliverator_pool:remove_deliverator(Deliverator),
     NewState = maps:update("assignments", Assignments, State),
-    recieve_packages(FailedPackages),
+    case (length(FailedPackages) > 0) of
+        true ->
+            recieve_packages(FailedPackages);
+        false ->
+            ok
+    end,
     {noreply, NewState}.
 
 assign_packages(State, Packages, Deliverator) ->

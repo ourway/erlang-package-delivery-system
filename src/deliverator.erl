@@ -35,7 +35,7 @@ maybe_crash() ->
             ok;
         true ->
             io:format("Delivery of package failed.~n"),
-            error(crash)
+            exit(self(), crash)
     end.
 
 deliver([Package | RemainigPackages]) ->
