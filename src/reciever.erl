@@ -2,7 +2,7 @@
 %%% @author farshid.ashouri
 %%% @copyright (C) 2021, farshid.ashouri
 %%% @doc
-%%%
+%%% Main reciever module
 %%% @end
 %%% Created : 2021-11-19 01:37:01.567395
 %%%-------------------------------------------------------------------
