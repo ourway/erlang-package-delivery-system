@@ -18,5 +18,6 @@ _build
 rebar3.crashdump
 *.so
 *~
-.tmp
+*.tmp
 temptags
+Mnesia.*

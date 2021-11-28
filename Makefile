@@ -1,7 +1,7 @@
 run:
 	@rebar3 compile
 	@rebar3 dialyzer
-	@rebar3 shell
+	@rebar3 shell --sname dev_1@localhost
 build:
 	@rm -rf _build
 	@rebar3 plugins upgrade

@@ -5,7 +5,7 @@
 -on_load(init/0).
 
 init() ->
-      erlang:load_nif("c_src/uuid", 0).
+    erlang:load_nif("c_src/uuid", 0).
 
 uuid4() ->
-	      erlang:nif_error("NIF library not loaded").
+    erlang:nif_error("NIF library not loaded").
