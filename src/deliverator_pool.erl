@@ -38,7 +38,7 @@ start_link() ->
     gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
 
 init(_Args) ->
-    io:format("hello from pool~n"),
+    io:format("Pool server started~n"),
     State = #{"deliverators" => [], "max" => ?MAX},
     {ok, State}.
 

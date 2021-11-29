@@ -3,8 +3,33 @@
     {vsn, "0.1.0"},
     {registered, []},
     {mod, {delivery_system_app, []}},
-    {applications, [kernel, stdlib]},
-    {env, []},
+    {applications, [kernel, stdlib, mnesia, crypto, ssl]},
+    {env, [
+        {pools, [
+            {pool1,
+                [
+                    {size, 10},
+                    {max_overflow, 20}
+                ],
+                [
+                    {hostname, "127.0.0.1"},
+                    {database, "erl_tests"},
+                    {username, "farsheed"},
+                    {password, "abc123"}
+                ]},
+            {pool2,
+                [
+                    {size, 5},
+                    {max_overflow, 10}
+                ],
+                [
+                    {hostname, "127.0.0.1"},
+                    {database, "erl_tests"},
+                    {username, "farsheed"},
+                    {password, "abc123"}
+                ]}
+        ]}
+    ]},
     {modules, []},
     {licenses, ["Apache 2.0"]},
     {links, []}

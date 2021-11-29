@@ -25,6 +25,18 @@ start_link() ->
 %%                  type => worker(),       % optional
 %%                  modules => modules()}   % optional
 init([]) ->
+    {ok, Pools} = application:get_env(delivery_system, pools),
+    PoolSpecs = lists:map(
+        fun({Name, SizeArgs, WorkerArgs}) ->
+            PoolArgs =
+                [
+                    {name, {local, Name}},
+                    {worker_module, db_worker}
+                ] ++ SizeArgs,
+            poolboy:child_spec(Name, PoolArgs, WorkerArgs)
+        end,
+        Pools
+    ),
     SupFlags =
         #{
             strategy => one_for_one,
@@ -50,6 +62,6 @@ init([]) ->
                 modules => [deliverator_pool2]
             }
         ],
-    {ok, {SupFlags, ChildSpecs}}.
+    {ok, {SupFlags, ChildSpecs ++ PoolSpecs}}.
 
 %% internal functions
