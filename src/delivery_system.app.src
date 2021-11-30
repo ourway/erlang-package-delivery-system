@@ -14,7 +14,7 @@
                 [
                     {hostname, "127.0.0.1"},
                     {database, "erl_tests"},
-                    {username, "farsheed"},
+                    {username, "farshid.ashouri"},
                     {password, "abc123"}
                 ]},
             {pool2,
@@ -25,7 +25,7 @@
                 [
                     {hostname, "127.0.0.1"},
                     {database, "erl_tests"},
-                    {username, "farsheed"},
+                    {username, "farshid.ashouri"},
                     {password, "abc123"}
                 ]}
         ]}

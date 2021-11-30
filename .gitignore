@@ -21,3 +21,4 @@ rebar3.crashdump
 *.tmp
 temptags
 Mnesia.*
+priv/*.pem
