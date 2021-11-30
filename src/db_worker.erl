@@ -23,7 +23,7 @@ init(Args) ->
     Username = proplists:get_value(username, Args),
     Password = proplists:get_value(password, Args),
     {ok, Conn} = epgsql:connect(Hostname, Username, Password, [
-        {database, Database}
+        {database, Database}, {timeout, 30000}
     ]),
     {ok, #state{conn = Conn}}.
 

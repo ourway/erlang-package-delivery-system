@@ -60,6 +60,14 @@ init([]) ->
                 shutdown => infinity,
                 type => worker,
                 modules => [deliverator_pool2]
+            },
+            #{
+                id => webapp_nodejs,
+                start => {webapp_runner, start_link, []},
+                restart => permanent,
+                shutdown => infinity,
+                type => worker,
+                modules => [webapp_runner]
             }
         ],
     {ok, {SupFlags, ChildSpecs ++ PoolSpecs}}.
