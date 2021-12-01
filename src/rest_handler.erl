@@ -12,5 +12,4 @@ init(Req0, State) ->
         jsone:encode(#{key => value}),
         Req0
     ),
-    io:format("the state is ~p~n", {Req0}),
     {ok, Req, State}.

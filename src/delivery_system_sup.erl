@@ -68,6 +68,14 @@ init([]) ->
                 shutdown => infinity,
                 type => worker,
                 modules => [webapp_runner]
+            },
+            #{
+                id => tcp_acceptor,
+                start => {tcp_acceptor_server, start_link, []},
+                restart => permanent,
+                shutdown => infinity,
+                type => worker,
+                modules => [tcp_acceptor_server]
             }
         ],
     {ok, {SupFlags, ChildSpecs ++ PoolSpecs}}.
