@@ -3,7 +3,16 @@
     {vsn, "0.1.0"},
     {registered, []},
     {mod, {delivery_system_app, []}},
-    {applications, [kernel, stdlib, mnesia, crypto, ssl, cowboy, cowlib, ranch]},
+    {applications, [
+        kernel,
+        stdlib,
+        mnesia,
+        crypto,
+        ssl,
+        cowboy,
+        cowlib,
+        ranch
+    ]},
     {env, [
         {pools, [
             {pool1,
