@@ -11,7 +11,9 @@
         ssl,
         cowboy,
         cowlib,
-        ranch
+        ranch,
+        xmerl,
+        feeder
     ]},
     {env, [
         {pools, [
