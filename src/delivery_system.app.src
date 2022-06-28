@@ -8,12 +8,16 @@
         stdlib,
         mnesia,
         crypto,
+        inets,
+        public_key,
         ssl,
         cowboy,
         cowlib,
         ranch,
         xmerl,
-        feeder
+        feeder,
+        hackney,
+        restc
     ]},
     {env, [
         {pools, [
