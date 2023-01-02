@@ -22,3 +22,4 @@ rebar3.crashdump
 temptags
 Mnesia.*
 priv/*.pem
+.Session.vim
